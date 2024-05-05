@@ -2,7 +2,7 @@ use std::io;
 use std::convert::TryFrom;
 use rand::seq::SliceRandom;
 
-fn print_board(board: &mut Vec<char>) {
+fn print_board(board: &Vec<char>) {
     println!("");
     println!("{}|{}|{}", board[0], board[1], board[2]);
     println!("{}|{}|{}", board[3], board[4], board[5]);
@@ -48,12 +48,12 @@ fn random_move(board: &mut Vec<char>) {
         }
     }
 
-    let random_index = avail_moves.choose(&mut rand::thread_rng()).unwrap();
+    let random_index: u32 = avail_moves.choose(&mut rand::thread_rng()).unwrap();
     board[*random_index as usize] = 'O';
 
 }
 
-fn check_for_winner(board: &mut Vec<char>) -> char {
+fn check_for_winner(board: &Vec<char>) -> Option<char> {
 
     let all_combs: [[char; 3]; 8] = [
         [board[0], board[1], board[2]],
@@ -68,53 +68,53 @@ fn check_for_winner(board: &mut Vec<char>) -> char {
     
     for comb in all_combs.iter() {
         if comb[0] == 'X' && comb[1] == 'X' && comb[2] == 'X' {
-            return 'X';
+            return Some('X');
         } else if comb[0] == 'O' && comb[1] == 'O' && comb[2] == 'O' {
-            return 'O';
+            return Some('O');
         }
     }
 
-    if !board.contains(&'-') {
-        return 'T';
+    if board.contains(&'-') {
+        return None;
     }
-
-    'N'
+    
+    Some('T')
 
 }
 
 fn main() {
 
     let mut board = vec!['-', '-', '-', '-', '-', '-', '-', '-', '-'];
-    let mut winner: char;
+    let mut winner: Option<char>;
 
     println!("You are player X.");
 
     loop {
 
-        print_board(&mut board);
+        print_board(&board);
 
         input_move(&mut board);
-        winner = check_for_winner(&mut board);
-        if winner != 'N' {
+
+        winner = check_for_winner(&board);
+        if winner.is_some() {
             break;
         }
 
         random_move(&mut board);
-        winner = check_for_winner(&mut board);
-        if winner != 'N' {
+
+        winner = check_for_winner(&board);
+        if winner.is_some() {
             break;
         }
 
     }
 
-    print_board(&mut board);
+    print_board(&board);
 
-    if winner == 'X' {
-        println!("You win!");
-    } else if winner == 'O' {
-        println!("You lose!");
-    } else {
-        println!("Tie game!");
+    match winner.unwrap() {
+        'X' => println!("You win!"),
+        'O' => println!("You lose!"),
+        _ => println!("Tie game!"),
     }
 
 }
