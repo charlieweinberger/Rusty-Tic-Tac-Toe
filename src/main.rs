@@ -1,6 +1,6 @@
-use rand::seq::SliceRandom;
 use std::io;
 use std::convert::TryFrom;
+use rand::seq::SliceRandom;
 
 fn print_board(board: &mut Vec<char>) {
     println!("");
@@ -66,12 +66,7 @@ fn check_for_winner(board: &mut Vec<char>) -> char {
         [board[2], board[4], board[6]]
     ];
     
-    // for comb in all_combs.into_iter() {
     for comb in all_combs.iter() {
-        // match winner {
-        //     ['X', 'X', 'X'] => return 'X',
-        //     ['O', 'O', 'O'] => return 'O',
-        // }
         if comb[0] == 'X' && comb[1] == 'X' && comb[2] == 'X' {
             return 'X';
         } else if comb[0] == 'O' && comb[1] == 'O' && comb[2] == 'O' {
@@ -82,7 +77,8 @@ fn check_for_winner(board: &mut Vec<char>) -> char {
     if !board.contains(&'-') {
         return 'T';
     }
-    return 'N';
+
+    'N'
 
 }
 
