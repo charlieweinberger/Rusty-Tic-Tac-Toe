@@ -1,5 +1,4 @@
 use std::io;
-use std::convert::TryFrom;
 use rand::seq::SliceRandom;
 
 fn print_board(board: &Vec<char>) {
@@ -14,8 +13,8 @@ fn input_move(board: &mut Vec<char>) {
 
     println!("Where do you want to move? Input a number between 1 and 9.");
 
-    let mut move_string = String::new();
-
+    let mut move_string: String = String::new();
+    
     io::stdin()
         .read_line(&mut move_string)
         .expect("Failed to read from stdin.");
@@ -43,12 +42,13 @@ fn random_move(board: &mut Vec<char>) {
 
     for i in 0..9 {
         if board[i] == '-' {
-            let index: u32 = u32::try_from(i).unwrap();
-            avail_moves.push(index);
+            avail_moves.push(
+                u32::try_from(i).unwrap()
+            );
         }
     }
 
-    let random_index: u32 = avail_moves.choose(&mut rand::thread_rng()).unwrap();
+    let random_index: &u32 = avail_moves.choose(&mut rand::thread_rng()).unwrap();
     board[*random_index as usize] = 'O';
 
 }
@@ -67,10 +67,10 @@ fn check_for_winner(board: &Vec<char>) -> Option<char> {
     ];
     
     for comb in all_combs.iter() {
-        if comb[0] == 'X' && comb[1] == 'X' && comb[2] == 'X' {
-            return Some('X');
-        } else if comb[0] == 'O' && comb[1] == 'O' && comb[2] == 'O' {
-            return Some('O');
+        match comb {
+            ['X', 'X', 'X'] => return Some('X'),
+            ['O', 'O', 'O'] => return Some('O'),
+            _ => {},
         }
     }
 
@@ -84,10 +84,10 @@ fn check_for_winner(board: &Vec<char>) -> Option<char> {
 
 fn main() {
 
-    let mut board = vec!['-', '-', '-', '-', '-', '-', '-', '-', '-'];
+    let mut board: Vec<char> = vec!['-', '-', '-', '-', '-', '-', '-', '-', '-'];
     let mut winner: Option<char>;
 
-    println!("You are player X.");
+    println!("\nWelcome to tic-tac-toe!\nYou are player X.");
 
     loop {
 
